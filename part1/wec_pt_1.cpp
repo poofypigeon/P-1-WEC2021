@@ -3,9 +3,6 @@
 #include <cctype>
 #include <vector>
 #include <string>
-#include <sstream>
-#include <cctype>
-#include <cmath>
 
 inline
 uint8_t char_index(char c) 
