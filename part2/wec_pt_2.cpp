@@ -55,7 +55,8 @@ key get_key(char c)
     return k;
 }
 
-float broken_button_time(uint32_t num, uint32_t broken_key) {
+float broken_button_time(uint32_t num, uint32_t broken_key) 
+{
     if (num != broken_key) return 0;
 
     switch (broken_key) {
@@ -110,11 +111,6 @@ int main()
     // Search PACKAGE directory for file
     file_name = "../PACKAGE/" + file_name;
 
-    #ifdef TIMED
-        std::chrono::time_point<std::chrono::system_clock> start, end;
-        start = std::chrono::system_clock::now();
-    #endif
-
     std::ifstream file;
     file.open(file_name);
 
@@ -146,24 +142,10 @@ int main()
         word_list.push_back(input_buffer);
     }
 
-    #ifdef TIMED
-        std::vector<float> times;
 
-        // Print strings with times
-        for (std::string str : word_list)
-            { times.push_back(get_time(str)); }
-        
-        end = std::chrono::system_clock::now();
-        std::chrono::duration<double> elapsed_seconds = end-start;
+    for (std::string str : word_list)
+        { std::cout << str << " = " << get_time(str, broken_key) << 's' << std::endl; }
 
-        for (int i{0}; i < word_list.size(); i++)
-            { std::cout << word_list[i] << " = " << times[i] << 's' << std::endl; }
-
-        std::cout << "Elapsed time: " << elapsed_seconds.count() << "s\n";
-    #else
-        for (std::string str : word_list)
-            { std::cout << str << " = " << get_time(str, broken_key) << 's' << std::endl; }
-    #endif
 
     file.close();
 }
