@@ -19,23 +19,34 @@ typedef struct {
 key get_key(char c)
 {
     key k;
-    char c_low = tolower(c);
 
+    // Key 0 (Spacebar)
+    if (c == ' ') {
+        k.num = 0;
+        k.pos = 0;
+        return k;
+    }
+
+    // Key 7 (4 letters)
+    char c_low = tolower(c);
     if (c_low >= 'p' && c_low <= 's') {
         k.num = 7;
         k.pos = c_low - 'p';
     }
     
+    // Key 8 (3 letters offset by 7)
     else if (c_low >= 't' && c_low <= 'v') {
         k.num = 8;
         k.pos = c_low - 't';
     }
 
+    // Key 9 (4 letters)
     else if (c_low >= 'w' && c_low <= 'z') {
         k.num = 9;
         k.pos = c_low - 'w';
     }
 
+    // Keys 1-6 (3 letters each) 
     else {
         k.num = (char_index(c) / 3) + 2;
         k.pos = char_index(c) % 3;

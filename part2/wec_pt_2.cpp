@@ -55,19 +55,34 @@ key get_key(char c)
     return k;
 }
 
-float get_time(std::string line) 
+float broken_button_time(uint32_t num, uint32_t broken_key) {
+    if (num != broken_key) return 0;
+
+    switch (broken_key) {
+        case 2:
+            return 0.25;
+        case 0:
+        case 8:
+            return 1.0;
+        default:
+            return 0.75;
+    }
+}
+
+float get_time(std::string line, uint32_t broken_key) 
 {     
     float time_elapsed{0.0};
 
     key k = get_key(line[0]);
     time_elapsed += k.pos * 0.25; // RULE 1
     time_elapsed += isupper(line[0]) ? 2.0 : 0.0;
+    time_elapsed += broken_button_time(k.num, broken_key);
 
     char prev_ch{line[0]};
     key prev_key{get_key(prev_ch)};
 
     if (line.length() > 1) {
-        for (unsigned int k{1}; k < line.length(); k++) {
+        for (std::size_t k{1}; k < line.length(); k++) {
             char curr_ch{line[k]};
             key curr_key{get_key(curr_ch)};
 
@@ -75,6 +90,7 @@ float get_time(std::string line)
 
             time_elapsed += curr_key.pos * 0.25;                            // RULE 3
             time_elapsed += isupper(curr_ch) ? 2.0 : 0.0;                   // RULE 5
+            time_elapsed += broken_button_time(curr_key.num, broken_key);
 
             prev_ch = curr_ch;
             prev_key = curr_key;
@@ -118,6 +134,10 @@ int main()
     // Read strings from input file
     std::string input_buffer;
 
+    // read in broken key
+    std::getline(file, input_buffer);
+    uint32_t broken_key = std::stoi(input_buffer);
+
     while (std::getline(file, input_buffer)) {
         // Remove carriage return from string
         if (input_buffer[input_buffer.length() - 1] == '\r')
@@ -142,7 +162,7 @@ int main()
         std::cout << "Elapsed time: " << elapsed_seconds.count() << "s\n";
     #else
         for (std::string str : word_list)
-            { std::cout << str << " = " << get_time(str) << 's' << std::endl; }
+            { std::cout << str << " = " << get_time(str, broken_key) << 's' << std::endl; }
     #endif
 
     file.close();
