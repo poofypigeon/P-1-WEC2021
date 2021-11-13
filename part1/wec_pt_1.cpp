@@ -48,56 +48,66 @@ key get_key(char c)
 
 double get_time(std::string line) 
 {     
-     double time_elapsed{0.0};
+    double time_elapsed{0.0};
     
-    // RULE 1
-    if (line.length() == 0) return 0.0;
+    if (line.length() == 0) return 0.0; // RULE 1
 
     key k = get_key(line[0]);
     time_elapsed += k.pos * 0.25;
     time_elapsed += isupper(line[0]) ? 2.0 : 0.0;
 
+    char prev_ch{line[0]};
+    key prev_key{get_key(prev_ch)};
+
     if (line.length() > 1) {
         for (unsigned int k{1}; k < line.length(); k++) {
             char curr_ch{line[k]};
-            char prev_ch{line[k - 1]};
             key curr_key{get_key(curr_ch)};
-            key prev_key{get_key(prev_ch)};
 
-            if (curr_key.num == prev_key.num) {
-                time_elapsed += curr_key.pos * 0.25; // RULE 3
-                time_elapsed += 0.5; // RULE 4
-                time_elapsed += (isupper(curr_ch) ? 2.0 : 0.0); // RULE 5
-            }
-            
-            // RULE 2 
-            else {
-                time_elapsed += 0.25;  
-            } 
+            time_elapsed += (curr_key.num == prev_key.num) ? 0.5 : 0.25;    // RULE 4
+
+            time_elapsed += curr_key.pos * 0.25;                            // RULE 3
+            time_elapsed += isupper(curr_ch) ? 2.0 : 0.0;                   // RULE 5
+
+            prev_ch = curr_ch;
+            prev_key = curr_key;
         }
     }
-
 
     return time_elapsed;
 }
 
 int main()
 {
+    // Get file name from user
     std::string file_name;
+
+    std::cout << "Input file: ";
     std::getline(std::cin, file_name);
+
+    // Search PACKAGE directory for file
     file_name = "../PACKAGE/" + file_name;
 
     std::ifstream file;
     file.open(file_name);
 
     std::vector<std::string> word_list;
+
+    // Read strings from input file
     std::string input_buffer;
 
     while (std::getline(file, input_buffer)) {
+        // Remove carriage return from string
+        if (input_buffer[input_buffer.length() - 1] == '\r')
+            { input_buffer.pop_back(); }
+
         word_list.push_back(input_buffer);
     }
 
-    // main stuff
+    // Print strings with times
+    for (std::string str : word_list)
+        { std::cout << str << " = " << get_time(str) << 's' << std::endl; }
+    std::cout << std::endl;
 
     file.close();
 }
