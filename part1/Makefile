@@ -1,4 +1,4 @@
-CC = clang++
+CC = g++
 OBJS = wec_pt_1.cpp 
 CFLAGS = -Wall -O2 -std=c++11
 BIN = wec21
