@@ -3,6 +3,7 @@
 #include <cctype>
 #include <vector>
 #include <string>
+#include <chrono>
 
 inline
 uint8_t char_index(char c) 
@@ -50,7 +51,7 @@ double get_time(std::string line)
     if (line.length() == 0) return 0.0;
 
     key k = get_key(line[0]);
-    time_elapsed += k.pos * 0.25;
+    time_elapsed += k.pos * 0.25; // rule 1
     time_elapsed += isupper(line[0]) ? 2.0 : 0.0;
 
     char prev_ch{line[0]};
@@ -81,6 +82,11 @@ int main()
 
     std::cout << "Input file: ";
     std::getline(std::cin, file_name);
+    // Search PACKAGE directory for file
+    file_name = "../PACKAGE/" + file_name;
+
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
 
     std::ifstream file;
     file.open(file_name);
@@ -114,4 +120,8 @@ int main()
         { std::cout << str << " = " << get_time(str) << 's' << std::endl; }
 
     file.close();
+    
+    end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::cout << "Elapsed time: " << elapsed_seconds.count() << "s\n";
 }
