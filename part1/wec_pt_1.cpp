@@ -73,47 +73,46 @@ int main()
 
 
 
-
-// double get_time(std::string line) 
-// {
-//     uint8_t size = line.length();
-//     double time_elapsed{0.0};
+double get_time(std::string line) 
+{     
+     uint8_t size = line.length();
+     double time_elapsed{0.0};
     
     // RULE 1
-    // don't consider for k=1 or k=0, so just return 0.0
+    //don't consider for size=1 or size=0 (if line[k] isn't num 2 or capital), so just return 0.0
     
+     if (size == 1) {
+        
+         return time_elapsed;
+     }
+
+
     if (size > 1) {
         for (unsigned int k{1}; k < size; k++) {
             char current_char = line[k];
-            uint8_t current_pos = get_key(current_char).pos;
+            uint8_t current_num = get_key(current_char).num;
             char previous_char= line[k-1];
-            uint8_t previous_pos get_key(previous_char).pos;
+            uint8_t previous_num get_key(previous_char).num;
             
+            // check first if capital
+            bool isUpper = isupper(current_char);
+
             // RULE 2 
             // determine whether they're on the same key, but not the same letter
-            bool isSameKey = (current_pos == previous_pos); 
+            bool isSameKey = (current_num == previous_num); 
 
             if (isSameKey) {
                 // RULE 3
-                // find the number difference if on the same key and then figure out how many extra 
-                uint8_t num_presses{math::abs((get_key(current_char).num) - get_key(previous_char).num)};
-
+                uint8_t num_presses{get_key{current_char}.pos - 1};
                 time_elapsed += num_presses*0.25;
-
 
             } else if (!isSameKey) {
                 time_elapsed += 0.25;  
 
             } 
-
-            return time_elapsed;
         }
     }
 
 
-//     return time_elapsed;
-// }
-
-// input of ac
-//
-// zero on the first round, and then some movement distance 
+    return time_elapsed;
+}
