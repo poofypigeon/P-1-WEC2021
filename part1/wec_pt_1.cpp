@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <cctype>
 #include <vector>
 #include <string>
@@ -47,22 +48,23 @@ key get_key(char c)
 
 int main()
 {
-    for (char c{'a'}; c <= 'z'; c++) {
-        key k = get_key(c);
-        std::cout << c << ": " << k.num << ", " << k.pos << std::endl;
+    std::string file_name;
+    std::getline(std::cin, file_name);
+    file_name = "../PACKAGE/" + file_name;
+
+    std::ifstream file;
+    file.open(file_name);
+
+    std::vector<std::string> word_list;
+    std::string input_buffer;
+
+    while (std::getline(file, input_buffer)) {
+        word_list.push_back(input_buffer);
     }
 
-    // std::vector<std::string> word_list;
+    // main stuff
 
-    // std::string buff;
-    // while (std::cin.eofbit != 0) {
-    //     std::getline(std::cin, buff);
-    //     word_list.push_back(buff);
-    // }
-
-    // for (std::string str : word_list) {
-    //     std::cout << str << std::endl;
-    // }
+    file.close();
 }
 
 
