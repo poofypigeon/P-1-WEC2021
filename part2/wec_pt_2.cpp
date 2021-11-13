@@ -5,6 +5,8 @@
 #include <string>
 #include <chrono>
 
+#define float_eq(a, b) (((a)-(b) > -1e-10) && ((a)-(b) < 1e-10))
+
 inline
 uint8_t char_index(char c) 
 {
@@ -101,6 +103,8 @@ float get_time(std::string line, uint32_t broken_key)
     return time_elapsed;
 }
 
+typedef std::pair <std::string, float> timepair; 
+
 int main()
 {
     // Get file name from user
@@ -142,10 +146,29 @@ int main()
         word_list.push_back(input_buffer);
     }
 
+    // get the min ready so that it stays after the loop finishes
+    float min_time = get_time(word_list[0], broken_key);
+    std::vector <timepair> results;
 
-    for (std::string str : word_list)
-        { std::cout << str << " = " << get_time(str, broken_key) << 's' << std::endl; }
+    //push the first pair into the vector
+    results.push_back(timepair(word_list[0], get_time(word_list[0], broken_key)));
 
+    for (unsigned int j{1}; j < word_list.size(); j++) {
+        timepair curr{word_list[j], get_time(word_list[j], broken_key)};
+
+        if (float_eq(curr.second, min_time)) {
+            results.push_back(curr);
+        }
+
+        else if (curr.second < min_time) {
+            results.clear();
+            results.push_back(curr);
+            min_time = curr.second;
+        }
+    }
+
+    for (unsigned int k{0}; k < results.size(); k++) 
+        {std::cout << results[k].first << " = " << results[k].second << 's' << std::endl;}
 
     file.close();
 }

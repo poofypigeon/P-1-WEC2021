@@ -5,6 +5,8 @@
 #include <string>
 #include <chrono>
 
+#define float_eq(a, b) (((a)-(b) > -1e-10) && ((a)-(b) < 1e-10))
+
 inline
 uint8_t char_index(char c) 
 {
@@ -123,40 +125,30 @@ int main()
         word_list.push_back(input_buffer);
     }
 
-    #ifdef TIMED
-        std::vector<float> times;
+    // get the min ready so that it stays after the loop finishes
+    float min_time = get_time(word_list[0]);
+    std::vector <timepair> results;
 
-        // Print strings with times
-        for (std::string str : word_list)
-            { times.push_back(get_time(str)); }
-        
-        end = std::chrono::system_clock::now();
-        std::chrono::duration<double> elapsed_seconds = end-start;
+    //push the first pair into the vector
+    results.push_back(timepair(word_list[0], get_time(word_list[0])));
 
-        std::cout << "Elapsed time: " << elapsed_seconds.count() << "s\n";
-    #else
-        // get the min ready so that it stays after the loop finishes
-        timepair min = timepair(word_list[0], get_time(word_list[0]));
-        std::vector <timepair> results;
+    for (unsigned int j{1}; j < word_list.size(); j++) {
+        timepair curr{word_list[j], get_time(word_list[j])};
 
-        //push the first pair into the vector
-        results.push_back(min);
+        if (float_eq(curr.second, min_time)) {
+            results.push_back(curr);
+        }
 
-        for (unsigned int j{1}; j < word_list.size(); j++)
-            {
-                timepair current = timepair(word_list[j],get_time(word_list[j]));
-                if (current.second < min.second) {
-                    results.clear();
-                    results.push_back(current);
-                } else if (current.second == min.second ) {
-                    results.push_back(current);
-                }
-            }
+        else if (curr.second < min_time) {
+            results.clear();
+            results.push_back(curr);
+            min_time = curr.second;
+        }
+    }
 
-        for (unsigned int k{0}; k < results.size(); k++) 
+    for (unsigned int k{0}; k < results.size(); k++) 
         {std::cout << results[k].first << " = " << results[k].second << 's' << std::endl;}
     
-    #endif
 
     file.close();
 }
