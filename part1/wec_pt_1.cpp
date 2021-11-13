@@ -5,6 +5,7 @@
 #include <string>
 #include <chrono>
 
+// macro to test for float equality
 #define float_eq(a, b) (((a)-(b) > -1e-10) && ((a)-(b) < 1e-10))
 
 inline
@@ -87,6 +88,8 @@ float get_time(std::string line)
 }
 
 typedef std::pair <std::string, float> timepair; 
+// below line *only* used if we have some sort of timer
+typedef std::chrono::high_resolution_clock Clock;
 
 int main()
 {
@@ -97,15 +100,18 @@ int main()
     std::getline(std::cin, file_name);
     // Search PACKAGE directory for file
     file_name = "../PACKAGE/" + file_name;
-
+#ifdef TIMER
+    auto start_time = Clock::now();
+#endif
     std::ifstream file;
     file.open(file_name);
 
     if (!file.is_open()) {
         // Search PACKAGE directory for file
         std::string file_name_package = "../PACKAGE/" + file_name;
-
+    
         file.open(file_name_package);
+        // error message output
         if (!file.is_open()) {
             std::cout << "Unable to open " << '"' << file_name << "\"." << std::endl;
             exit(1);
@@ -121,7 +127,7 @@ int main()
         // Remove carriage return from string
         if (input_buffer[input_buffer.length() - 1] == '\r')
             { input_buffer.pop_back(); }
-
+        // remove output to prevent being overwritten
         word_list.push_back(input_buffer);
     }
 
@@ -133,22 +139,35 @@ int main()
     results.push_back(timepair(word_list[0], get_time(word_list[0])));
 
     for (unsigned int j{1}; j < word_list.size(); j++) {
+        // aliased version of pairs for our purpose
         timepair curr{word_list[j], get_time(word_list[j])};
-
+        
+        // testing to make sure that the floats are within 
+        // margin of error -- floats are fussy
         if (float_eq(curr.second, min_time)) {
             results.push_back(curr);
         }
-
+        
+        // determine whether there is a minimum lower than what we have to clear 
+        // out and have a new minimum
         else if (curr.second < min_time) {
             results.clear();
             results.push_back(curr);
             min_time = curr.second;
         }
     }
-
+    
+    // print out the values collected
     for (unsigned int k{0}; k < results.size(); k++) 
         {std::cout << results[k].first << " = " << results[k].second << 's' << std::endl;}
     
+#ifdef TIMER
+    auto end_time = Clock::now();
+    std::cout << "\n\n";
+    
+    // output timing in microseconds from the stage after input
+    std::cout << "Time elapsed was: " << std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() << " microseconds." << std::endl;
+#endif
 
     file.close();
 }
