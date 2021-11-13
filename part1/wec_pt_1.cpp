@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cctype>
-
+#include <vector>
 #include <string>
 #include <sstream>
 #include <cctype>
@@ -12,21 +12,57 @@ uint8_t char_index(char c)
     return isupper(c) ? c - 'A' : c - 'a'; 
 }
 
-uint32_t get_key(char c)
-{
-    char ch = tolower(c);
+typedef struct {
+    uint32_t num;
+    uint32_t pos;
+} key;
 
-    if (ch >= 'p' && ch <= 's') return 7;
-    if (ch >= 't' && ch <= 'v') return 8;
-    if (ch >= 'w' && ch <= 'z') return 9;
-    return (char_index(c) / 3) + 2;
+key get_key(char c)
+{
+    key k;
+    char c_low =tolower(c);
+
+    if (c_low >= 'p' && c_low <= 's') {
+        k.num = 7;
+        k.pos = c_low - 'p';
+    }
+    
+    else if (c_low >= 't' && c_low <= 'v') {
+        k.num = 8;
+        k.pos = c_low - 't';
+    }
+
+    else if (c_low >= 'w' && c_low <= 'z') {
+        k.num = 9;
+        k.pos = c_low - 'w';
+    }
+
+    else {
+        k.num = (char_index(c) / 3) + 2;
+        k.pos = char_index(c) % 3;
+    };
+
+    return k;
 }
 
 int main()
 {
-    for (char c = 'a'; c <= 'z'; c++) {
-        std::cout << c << ' ' << get_key(c) << std::endl;
+    for (char c{'a'}; c <= 'z'; c++) {
+        key k = get_key(c);
+        std::cout << c << ": " << k.num << ", " << k.pos << std::endl;
     }
+
+    // std::vector<std::string> word_list;
+
+    // std::string buff;
+    // while (std::cin.eofbit != 0) {
+    //     std::getline(std::cin, buff);
+    //     word_list.push_back(buff);
+    // }
+
+    // for (std::string str : word_list) {
+    //     std::cout << str << std::endl;
+    // }
 }
 
 
@@ -38,10 +74,10 @@ int main()
 
 
 
-double get_time(std::string line) 
-{
-    uint8_t size = line.length();
-    double time_elapsed{0.0};
+// double get_time(std::string line) 
+// {
+//     uint8_t size = line.length();
+//     double time_elapsed{0.0};
     
     // RULE 1
     // don't consider for k=1 or k=0, so just return 0.0
@@ -59,6 +95,7 @@ double get_time(std::string line)
 
             if (isSameKey) {
                 // RULE 3
+                // find the number difference if on the same key and then figure out how many extra 
                 uint8_t num_presses{math::abs((get_key(current_char).num) - get_key(previous_char).num)};
 
                 time_elapsed += num_presses*0.25;
@@ -68,12 +105,14 @@ double get_time(std::string line)
                 time_elapsed += 0.25;  
 
             } 
+
+            return time_elapsed;
         }
     }
 
 
-    return time_elapsed;
-}
+//     return time_elapsed;
+// }
 
 // input of ac
 //
