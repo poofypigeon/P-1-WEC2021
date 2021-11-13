@@ -50,7 +50,7 @@ double get_time(std::string line)
 {     
     double time_elapsed{0.0};
     
-    if (line.length() == 0) return 0.0; // RULE 1
+    if (line.length() == 0) return 0.0;
 
     key k = get_key(line[0]);
     time_elapsed += k.pos * 0.25;
@@ -85,11 +85,19 @@ int main()
     std::cout << "Input file: ";
     std::getline(std::cin, file_name);
 
-    // Search PACKAGE directory for file
-    file_name = "../PACKAGE/" + file_name;
-
     std::ifstream file;
     file.open(file_name);
+
+    if (!file.is_open()) {
+        // Search PACKAGE directory for file
+        std::string file_name_package = "../PACKAGE/" + file_name;
+
+        file.open(file_name_package);
+        if (!file.is_open()) {
+            std::cout << "Unable to open " << '"' << file_name << "\"." << std::endl;
+            exit(1);
+        }
+    }
 
     std::vector<std::string> word_list;
 
@@ -107,7 +115,6 @@ int main()
     // Print strings with times
     for (std::string str : word_list)
         { std::cout << str << " = " << get_time(str) << 's' << std::endl; }
-    std::cout << std::endl;
 
     file.close();
 }
