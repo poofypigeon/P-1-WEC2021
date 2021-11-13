@@ -8,5 +8,10 @@ all: $(BIN)
 wec21: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(BIN)
 
+wec21_timed: $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -D TIMER -o $(BIN)
+
+timed: wec21_timed
+
 clean:
 	$(RM) -r wec21 wec21_timed *.o *.dSYM
