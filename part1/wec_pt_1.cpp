@@ -46,35 +46,6 @@ key get_key(char c)
     return k;
 }
 
-int main()
-{
-    std::string file_name;
-    std::getline(std::cin, file_name);
-    file_name = "../PACKAGE/" + file_name;
-
-    std::ifstream file;
-    file.open(file_name);
-
-    std::vector<std::string> word_list;
-    std::string input_buffer;
-
-    while (std::getline(file, input_buffer)) {
-        word_list.push_back(input_buffer);
-    }
-
-    // main stuff
-
-    file.close();
-}
-
-
-
-
-
-
-
-
-
 double get_time(std::string line) 
 {     
      uint8_t size = line.length();
@@ -117,4 +88,25 @@ double get_time(std::string line)
 
 
     return time_elapsed;
+}
+
+int main()
+{
+    std::string file_name;
+    std::getline(std::cin, file_name);
+    file_name = "../PACKAGE/" + file_name;
+
+    std::ifstream file;
+    file.open(file_name);
+
+    std::vector<std::string> word_list;
+    std::string input_buffer;
+
+    while (std::getline(file, input_buffer)) {
+        word_list.push_back(input_buffer);
+    }
+
+    // main stuff
+
+    file.close();
 }
