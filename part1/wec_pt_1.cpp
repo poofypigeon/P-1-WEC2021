@@ -5,7 +5,7 @@
 #include <string>
 #include <sstream>
 #include <cctype>
-#include <math>
+#include <cmath>
 
 inline
 uint8_t char_index(char c) 
@@ -48,44 +48,34 @@ key get_key(char c)
 
 double get_time(std::string line) 
 {     
-     uint8_t size = line.length();
      double time_elapsed{0.0};
     
     // RULE 1
     //don't consider for size=1 or size=0 (if line[k] isn't num 2 or capital), so just return 0.0
     
-     if (size == 1) {
-        
-         return time_elapsed;
-     }
+    if (line.length() == 0) return 0.0;
 
-
-    if (size > 1) {
-        for (unsigned int k{1}; k < size; k++) {
-            char current_char = line[k];
-            uint8_t current_num = get_key(current_char).num;
-            char previous_char= line[k-1];
-            uint8_t previous_num get_key(previous_char).num;
-            
-            // check first if capital
-            bool isUpper = isupper(current_char);
-
-            // RULE 2 
-            // determine whether they're on the same key, but not the same letter
-            bool isSameKey = (current_num == previous_num); 
-
-            if (isSameKey) {
-                // RULE 3
-                uint8_t num_presses{get_key{current_char}.pos - 1};
-                time_elapsed += num_presses*0.25;
-
-            } else if (!isSameKey) {
-                time_elapsed += 0.25;  
-
-            } 
-        }
+    if (line.length() == 1) {
+    
+        return time_elapsed;
     }
 
+    for (unsigned int k{1}; k < line.length(); k++) {
+        key curr_key = get_key(line[k]);
+        key prev_key = get_key(line[k - 1]);
+
+        // RULE 2 
+        // determine whether they're on the same key, but not the same letter
+
+        if (curr_key.num == prev_key.num) {
+            // RULE 3
+            time_elapsed += curr_key.pos * 0.25;
+        }
+        
+        else {
+            time_elapsed += 0.25;  
+        } 
+    }
 
     return time_elapsed;
 }
