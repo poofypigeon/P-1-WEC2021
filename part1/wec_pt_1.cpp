@@ -44,14 +44,12 @@ key get_key(char c)
     return k;
 }
 
-double get_time(std::string line) 
+float get_time(std::string line) 
 {     
-    double time_elapsed{0.0};
-    
-    if (line.length() == 0) return 0.0;
+    float time_elapsed{0.0};
 
     key k = get_key(line[0]);
-    time_elapsed += k.pos * 0.25; // rule 1
+    time_elapsed += k.pos * 0.25; // RULE 1
     time_elapsed += isupper(line[0]) ? 2.0 : 0.0;
 
     char prev_ch{line[0]};

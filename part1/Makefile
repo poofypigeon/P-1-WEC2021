@@ -1,6 +1,6 @@
-CC = g++
+CC = clang++
 OBJS = wec_pt_1.cpp 
-CFLAGS = -g -Wall -std=c++11
+CFLAGS = -Wall -O2 -std=c++11
 BIN = wec21
 
 all: $(BIN)
