@@ -51,35 +51,30 @@ double get_time(std::string line)
      double time_elapsed{0.0};
     
     // RULE 1
-    //don't consider for size=1 or size=0 (if line[k] isn't num 2 or capital), so just return 0.0
-    
     if (line.length() == 0) return 0.0;
 
-    if (line.length() == 1) {
-        key k = get_key(line[0]);
-        time_elapsed += k.pos * 0.25;                   // RULE 3
-        time_elapsed += isupper(line[0]) ? 2.0 : 0.0;   // RULE 5
+    key k = get_key(line[0]);
+    time_elapsed += k.pos * 0.25;
+    time_elapsed += isupper(line[0]) ? 2.0 : 0.0;
 
-        return time_elapsed;
-    }
+    if (line.length() > 1) {
+        for (unsigned int k{1}; k < line.length(); k++) {
+            char curr_ch{line[k]};
+            char prev_ch{line[k - 1]};
+            key curr_key{get_key(curr_ch)};
+            key prev_key{get_key(prev_ch)};
 
-    for (unsigned int k{1}; k < line.length(); k++) {
-        char curr_ch{line[k]};
-        char prev_ch{line[k - 1]};
-        key curr_key{get_key(curr_ch)};
-        key prev_key{get_key(prev_ch)};
-
-        // RULE 2 
-        // determine whether they're on the same key, but not the same letter
-
-        if (curr_key.num == prev_key.num) {
-            // RULE 3
-            time_elapsed += curr_key.pos * 0.25;
+            if (curr_key.num == prev_key.num) {
+                time_elapsed += curr_key.pos * 0.25; // RULE 3
+                time_elapsed += 0.5; // RULE 4
+                time_elapsed += (isupper(curr_ch) ? 2.0 : 0.0); // RULE 5
+            }
+            
+            // RULE 2 
+            else {
+                time_elapsed += 0.25;  
+            } 
         }
-        
-        else {
-            time_elapsed += 0.25;  
-        } 
     }
 
 
