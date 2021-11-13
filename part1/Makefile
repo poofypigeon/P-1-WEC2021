@@ -1,5 +1,5 @@
 CC = g++
-OBJS = wec21.cpp 
+OBJS = wec_pt_1.cpp 
 CFLAGS = -g -Wall -std=c++11
 BIN = wec21
 
