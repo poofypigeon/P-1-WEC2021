@@ -18,7 +18,7 @@ typedef struct {
 key get_key(char c)
 {
     key k;
-    char c_low =tolower(c);
+    char c_low = tolower(c);
 
     if (c_low >= 'p' && c_low <= 's') {
         k.num = 7;
