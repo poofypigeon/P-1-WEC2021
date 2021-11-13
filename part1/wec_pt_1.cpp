@@ -84,6 +84,8 @@ float get_time(std::string line)
     return time_elapsed;
 }
 
+typedef std::pair <std::string, float> timepair; 
+
 int main()
 {
     // Get file name from user
@@ -121,8 +123,40 @@ int main()
         word_list.push_back(input_buffer);
     }
 
-    for (std::string str : word_list)
-        { std::cout << str << " = " << get_time(str) << 's' << std::endl; }
+    #ifdef TIMED
+        std::vector<float> times;
+
+        // Print strings with times
+        for (std::string str : word_list)
+            { times.push_back(get_time(str)); }
+        
+        end = std::chrono::system_clock::now();
+        std::chrono::duration<double> elapsed_seconds = end-start;
+
+        std::cout << "Elapsed time: " << elapsed_seconds.count() << "s\n";
+    #else
+        // get the min ready so that it stays after the loop finishes
+        timepair min = timepair(word_list[0], get_time(word_list[0]));
+        std::vector <timepair> results;
+
+        //push the first pair into the vector
+        results.push_back(min);
+
+        for (unsigned int j{1}; j < word_list.size(); j++)
+            {
+                timepair current = timepair(word_list[j],get_time(word_list[j]));
+                if (current.second < min.second) {
+                    results.clear();
+                    results.push_back(current);
+                } else if (current.second == min.second ) {
+                    results.push_back(current);
+                }
+            }
+
+        for (unsigned int k{0}; k < results.size(); k++) 
+        {std::cout << results[k].first << " = " << results[k].second << 's' << std::endl;}
+    
+    #endif
 
     file.close();
 }
