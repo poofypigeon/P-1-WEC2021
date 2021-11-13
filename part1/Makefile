@@ -14,4 +14,4 @@ wec21_timed: $(OBJS)
 timed: wec21_timed
 
 clean:
-	$(RM) -r $(BIN) *.o *.dSYM
+	$(RM) -r wec21 wec21_timed *.o *.dSYM
